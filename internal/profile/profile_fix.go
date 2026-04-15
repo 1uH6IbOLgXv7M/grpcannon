@@ -1,6 +1,8 @@
 package profile
 
-import "fmt"
-
-// re-declare fmt usage so the main file compiles (fmt was used in Validate).
-var _ = fmt.Sprintf
+// Stage represents a single step in a concurrency profile, pairing a target
+// worker count with the duration for which that count should be maintained.
+type Stage struct {
+	Workers  int
+	Duration interface{ String() string }
+}
