@@ -73,3 +73,18 @@ func TestNew_MinFailuresIsOne(t *testing.T) {
 		t.Fatal("expected open with effective maxFailures=1")
 	}
 }
+
+func TestRecordSuccess_ClosesOpenCircuit(t *testing.T) {
+	b := New(1, time.Hour)
+	b.RecordFailure()
+	if b.CurrentState() != StateOpen {
+		t.Fatal("expected open after failure")
+	}
+	b.RecordSuccess()
+	if b.CurrentState() != StateClosed {
+		t.Fatal("expected closed after success")
+	}
+	if err := b.Allow(); err != nil {
+		t.Fatalf("expected allow after success reset, got %v", err)
+	}
+}
