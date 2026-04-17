@@ -69,5 +69,16 @@ func TestShortName(t *testing.T) {
 		if got != tc.want {
 			t.Errorf("shortName(%q) = %q, want %q", tc.input, got, tc.want)
 		}
+	 TestParseFullMethod_RoundTrip(t *testing.T) {
+	// Verify that the service and method returned can be recombined
+	// into a canonical full method string.
+	input := "/helloworld.Greeter/SayHello"
+	svc, meth, err := ParseFullMethod(input)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	got := "/" + svc + "/" + meth
+	if got != input {
+		t.Errorf("round-trip = %q, want %q", got, input)
 	}
 }
