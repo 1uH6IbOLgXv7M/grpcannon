@@ -23,6 +23,13 @@ func TestNew_OddArgs_Panics(t *testing.T) {
 	tag.New("key")
 }
 
+func TestNew_NoArgs_ReturnsEmptyBag(t *testing.T) {
+	b := tag.New()
+	if b.Len() != 0 {
+		t.Fatalf("expected 0 tags, got %d", b.Len())
+	}
+}
+
 func TestGet_ExistingKey_ReturnsValue(t *testing.T) {
 	b := tag.New("env", "staging")
 	v, ok := b.Get("env")
@@ -78,5 +85,13 @@ func TestRegistry_Names_ReturnsAll(t *testing.T) {
 	sort.Strings(names)
 	if len(names) != 2 || names[0] != "a" || names[1] != "b" {
 		t.Fatalf("unexpected names: %v", names)
+	}
+}
+
+func TestRegistry_Names_Empty_ReturnsEmptySlice(t *testing.T) {
+	r := tag.NewRegistry()
+	names := r.Names()
+	if len(names) != 0 {
+		t.Fatalf("expected empty names slice, got %v", names)
 	}
 }
