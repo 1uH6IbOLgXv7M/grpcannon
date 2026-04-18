@@ -48,6 +48,13 @@ func TestAllow_AboveThreshold_ReturnsExceeded(t *testing.T) {
 	}
 }
 
+func TestRatio_NoRecords_ReturnsZero(t *testing.T) {
+	b := budget.New(0.5)
+	if got := b.Ratio(); got != 0.0 {
+		t.Fatalf("expected 0.0 for empty budget, got %f", got)
+	}
+}
+
 func TestRatio_AllFailures(t *testing.T) {
 	b := budget.New(0.5)
 	b.Record(errFake)
