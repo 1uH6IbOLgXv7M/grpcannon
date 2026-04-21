@@ -42,6 +42,10 @@ func Run(ctx context.Context, cfg Config, method string, payload []byte, doer Do
 	if cfg.Concurrency <= 0 {
 		cfg.Concurrency = 1
 	}
+	// Clamp concurrency to the number of requests to avoid idle goroutines.
+	if cfg.Concurrency > cfg.Requests {
+		cfg.Concurrency = cfg.Requests
+	}
 
 	work := make(chan struct{}, cfg.Requests)
 	for i := 0; i < cfg.Requests; i++ {
@@ -70,7 +74,7 @@ func Run(ctx context.Context, cfg Config, method string, payload []byte, doer Do
 			if r.err != nil {
 				errCount++
 			}
-		case <-ctx.Done():
+			case <-ctx.Done():
 			return errCount, fmt.Errorf("warmup cancelled: %w", ctx.Err())
 		}
 	}
